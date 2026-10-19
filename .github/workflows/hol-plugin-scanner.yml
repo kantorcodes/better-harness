@@ -1,0 +1,32 @@
+name: HOL AI Plugin Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: Scan plugin and agent content
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository without persisted credentials
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: HOL AI Plugin Scanner
+        uses: hashgraph-online/ai-plugin-scanner-action@4a44de6c18b68ec258fcc3e0cec5261fc8ea63fd
+        with:
+          mode: scan
+          plugin_dir: '.'
+          min_score: '80'
+          fail_on_severity: high
+          online: 'false'
+          upload_sarif: 'false'
+          submission_enabled: 'false'
+          pr_comment: 'off'
